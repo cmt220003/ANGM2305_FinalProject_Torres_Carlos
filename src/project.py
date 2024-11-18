@@ -7,7 +7,8 @@ import pygame
 def song_file():
     # Use pydub for audio analysis and frequency block breakdown into Bass, Midrange and Treble.
     from pydub import AudioSegment
-    song = AudioSegment.from_file("dullscythe.mp3")
+    song = AudioSegment.from_file("dullscythe.wav")
+    return song
 
 
 def bass_analysis():

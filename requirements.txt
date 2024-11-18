@@ -2,3 +2,7 @@ Libraries-
 PyGame
 PyDub
 NumPy
+ffmpeg
+threading
+time
+math
