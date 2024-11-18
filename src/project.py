@@ -74,6 +74,7 @@ def treble_visual(screen, amplitude):
         y = 270 + int((amplitude + 60) * (x % 2 * 2 - 1))
         pygame.draw.line(screen, color, (x, 270), (x, y), 1)
     print("visual 3")
+    
 def main():
     # create a while running loop to run bass_visual, midrange_visual, and treble_visual simultaneously along with the mp3 file chosen.
 
