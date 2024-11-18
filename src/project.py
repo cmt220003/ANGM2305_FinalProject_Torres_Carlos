@@ -2,11 +2,12 @@
 from pydub import AudioSegment
 from pydub.playback import play
 from pydub.effects import low_pass_filter, high_pass_filter
-import numpy
 import pygame
+import numpy
 import threading
-import math
+import threading
 import time
+import math
 
 
 
@@ -38,16 +39,41 @@ def treble_analysis(segment):
 
 def screen_window():
     # Create a black screen for the following track to be able to draw on using pygame. A screen of 960px by 540px.
+    pygame.init()
+    screen = pygame.display.set_mode((960, 540))
+    pygame.display.set_caption("Audio Visualizer - Dullscythe by Porter Robinson")
+    return screen
 
-def bass_visual():
+def bass_visual(screen, amplitude):
     # Use pygame to create a red circle pulse with parameters of size, thickness, and decay.
+    color = (255, 0, 0)
+    center = (480, 270)
+    max_radius = 200
+    radius = int((amplitude + 60) * 3)  # Adjust scaling for visible changes
+    pygame.draw.circle(screen, color, center, min(radius, max_radius), 2)
+    print("visual 1")
 
-def midrange_visual():
+def midrange_visual(screen, amplitude):
     # Use pygame to create a visual of blue bars that sit vertically at the center bottom of the screen. With parameters of how thick the bars are how far apart they are and how high up they go when activated.
+    color = (0, 0, 255)
+    num_bars = 10
+    bar_width = 15
+    spacing = 5
+    max_height = 150
+    for i in range(num_bars):
+        bar_height = min(int((amplitude + 60) * 3), max_height)
+        x = 480 + (i - num_bars // 2) * (bar_width + spacing)
+        y = 540 - bar_height
+        pygame.draw.rect(screen, color, (x, y, bar_width, bar_height))
+    print("visual 2")
 
-def treble_visual():
+def treble_visual(screen, amplitude):
     # Use pygame to create a green waveform that sits horizontally across the middle of the screen
-
+    color = (0, 255, 0)
+    for x in range(0, 960, 20):
+        y = 270 + int((amplitude + 60) * (x % 2 * 2 - 1))
+        pygame.draw.line(screen, color, (x, 270), (x, y), 1)
+    print("visual 3")
 def main():
     # create a while running loop to run bass_visual, midrange_visual, and treble_visual simultaneously along with the mp3 file chosen.
 
