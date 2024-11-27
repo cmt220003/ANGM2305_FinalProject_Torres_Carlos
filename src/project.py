@@ -37,6 +37,9 @@ def treble_analysis(segment):
     print("success 3")
     return treble_only.dBFS
 
+def adjust_amplitude(amplitude, min_amp=-60, max_amp=0):
+    return max(min(amplitude, max_amp), min_amp)
+
 def screen_window():
     # Create a black screen for the following track to be able to draw on using pygame. A screen of 960px by 540px.
     pygame.init()
