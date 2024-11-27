@@ -49,6 +49,7 @@ def screen_window():
 
 def bass_visual(screen, amplitude):
     # Use pygame to create a red circle pulse with parameters of size, thickness, and decay.
+    amplitude = adjust_amplitude(amplitude)
     color = (255, 0, 0)
     center = (480, 270)
     max_radius = 200
@@ -58,6 +59,7 @@ def bass_visual(screen, amplitude):
 
 def midrange_visual(screen, amplitude):
     # Use pygame to create a visual of blue bars that sit vertically at the center bottom of the screen. With parameters of how thick the bars are how far apart they are and how high up they go when activated.
+    amplitude = adjust_amplitude(amplitude)
     color = (0, 0, 255)
     num_bars = 10
     bar_width = 15
@@ -72,6 +74,7 @@ def midrange_visual(screen, amplitude):
 
 def treble_visual(screen, amplitude):
     # Use pygame to create a green waveform that sits horizontally across the middle of the screen
+    amplitude = adjust_amplitude(amplitude)
     color = (0, 255, 0)
     for x in range(0, 960, 20):
         y = 270 + int((amplitude + 60) * (x % 2 * 2 - 1))
@@ -87,6 +90,8 @@ def play_song():
 def main():
     # create a while running loop to run bass_visual, midrange_visual, and treble_visual simultaneously along with the mp3 file chosen.
     # Load the song and set up segments for analysis.
+    play_song()
+
     song = song_file()
     segment_lenght= 50 # miliseconds
     segments = [song[i:i + segment_lenght] for i in range(0, len(song), segment_lenght)]
