@@ -74,9 +74,65 @@ def treble_visual(screen, amplitude):
         y = 270 + int((amplitude + 60) * (x % 2 * 2 - 1))
         pygame.draw.line(screen, color, (x, 270), (x, y), 1)
     print("visual 3")
+
+def play_song():
+    pygame.mixer.init()
+    pygame.mixer.music.load("dullscythe.wav")
+    pygame.mixer.music.play()
+    print("Song Playing Now")
     
 def main():
     # create a while running loop to run bass_visual, midrange_visual, and treble_visual simultaneously along with the mp3 file chosen.
+    # Load the song and set up segments for analysis.
+    song = song_file()
+    segment_lenght= 50 # miliseconds
+    segments = [song[i:i + segment_lenght] for i in range(0, len(song), segment_lenght)]
+
+    # set up the screen
+    screen = screen_window()
+    clock = pygame.time.Clock()
+
+    threading.Thread(target=play_song, daemon=True).start()
+    time.sleep(0.25)
+
+    running = True
+    while running:
+        screen.fill((0, 0, 0,)) # Black Background
+
+        current_time = pygame.mixer.music.get_pos()
+        if current_time == -1:
+            print("Error: No Audio Detected.")
+            break
+
+        current_segment = current_time // segment_lenght
+
+        if current_segment <len(segments):
+            # Get Current segment and analyze frequencies.
+            segment = segments[current_segment]
+            bass_amp = bass_analysis(segment)
+            mid_amp = midrange_analysis(segment)
+            treble_amp = treble_analysis(segment)
+
+            #run visuals
+            bass_visual(screen, bass_amp)
+            midrange_visual(screen, mid_amp)
+            treble_visual(screen, treble_amp)
+        else:
+            print("End of Audio Segments.")
+            running = False
+
+        pygame.display.flip()
+        clock.tick(20) #FPS Limit
+
+        # Event Handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # Move to the next Segment
+        # Current_segment += 1
+
+    pygame.quit()
 
 if __name__ == "__main__":
     main()
