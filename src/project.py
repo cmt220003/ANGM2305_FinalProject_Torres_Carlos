@@ -1,4 +1,3 @@
-# Create a an Audio Visualizer for Dullscythe by Porter Robinson.
 from pydub import AudioSegment
 from pydub.playback import play
 from pydub.effects import low_pass_filter, high_pass_filter
@@ -8,40 +7,34 @@ import threading
 import threading
 import time
 import math
-
-
-
+# Create a an Audio Visualizer.
 def song_file():
     # Use pydub for audio analysis and frequency block breakdown into Bass, Midrange and Treble.
     song = AudioSegment.from_file("dullscythe.wav")
     return song
 
+# Bass analysis (30–299 Hz)
 def bass_analysis(segment):
-    # analyze frequency and audio loudness of bass section based on pydub.
     low_passed = low_pass_filter(segment, 299)  # Low-Pass filter below 299 Hz
     bass_only = high_pass_filter(low_passed, 30)  # High-pass filter above 30 Hz
-    print("success 1")
     return bass_only.dBFS  # Get amplitude in dBFS (decibels relative to full scale)
-    
 
+# Midrange analysis (300–5999 Hz)
 def midrange_analysis(segment):
-    # analyze frequency and audio loudness of midrange based on pydub.
     low_passed = low_pass_filter(segment, 5999)    # Low-pass filter below 5999 Hz
     mid_only = high_pass_filter(low_passed, 300)  # High-pass filter above 300 Hz
-    print("success 2")
     return mid_only.dBFS
 
+# Treble analysis (6000–20,000 Hz)
 def treble_analysis(segment):
-    # analyze frequency and audio loudness of treble based on pydub.
     treble_only = high_pass_filter(segment, 6000)  # High-pass filter above 6000 Hz
-    print("success 3")
     return treble_only.dBFS
 
 def adjust_amplitude(amplitude, min_amp=-60, max_amp=0):
     return max(min(amplitude, max_amp), min_amp)
 
+# Set up the screen
 def screen_window():
-    # Create a black screen for the following track to be able to draw on using pygame. A screen of 960px by 540px.
     pygame.init()
     screen = pygame.display.set_mode((960, 540))
     pygame.display.set_caption("Audio Visualizer - Dullscythe by Porter Robinson")
@@ -58,7 +51,6 @@ def bass_visual(screen, amplitude, base_thickness=10, fade_factor=0.05):
     thickness = max(int(base_thickness - radius * fade_factor), 1)
     pygame.draw.circle(screen, color, center, radius, thickness)
     
-
 def midrange_visual(screen, amplitude):
     # Use pygame to create a visual of blue bars that sit vertically at the center bottom of the screen. With parameters of how thick the bars are how far apart they are and how high up they go when activated.
     amplitude = adjust_amplitude(amplitude)
@@ -72,7 +64,6 @@ def midrange_visual(screen, amplitude):
         x = 480 + (i - num_bars // 2) * (bar_width + spacing)
         y = 540 - bar_height
         pygame.draw.rect(screen, color, (x, y, bar_width, bar_height))
-    print("visual 2")
 
 def treble_visual(screen, amplitude):
     # Use pygame to create a green waveform that sits horizontally across the middle of the screen
@@ -81,19 +72,16 @@ def treble_visual(screen, amplitude):
     for x in range(0, 960, 20):
         y = 270 + int((amplitude + 60) * (x % 2 * 2 - 1))
         pygame.draw.line(screen, color, (x, 270), (x, y), 1)
-    print("visual 3")
 
 def play_song():
     pygame.mixer.init()
     pygame.mixer.music.load("dullscythe.wav")
     pygame.mixer.music.play()
-    print("Song Playing Now")
     
 def main():
-    # create a while running loop to run bass_visual, midrange_visual, and treble_visual simultaneously along with the mp3 file chosen.
-    # Load the song and set up segments for analysis.
     play_song()
-
+    
+    # Load the song and set up segments for analysis.
     song = song_file()
     segment_lenght= 25 # miliseconds
     segments = [song[i:i + segment_lenght] for i in range(0, len(song), segment_lenght)]
@@ -138,9 +126,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-        # Move to the next Segment
-        # Current_segment += 1
 
     pygame.quit()
 
