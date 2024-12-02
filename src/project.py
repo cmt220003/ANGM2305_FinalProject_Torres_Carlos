@@ -47,15 +47,17 @@ def screen_window():
     pygame.display.set_caption("Audio Visualizer - Dullscythe by Porter Robinson")
     return screen
 
-def bass_visual(screen, amplitude):
+def bass_visual(screen, amplitude, base_thickness=10, fade_factor=0.05):
     # Use pygame to create a red circle pulse with parameters of size, thickness, and decay.
     amplitude = adjust_amplitude(amplitude)
     color = (255, 0, 0)
     center = (480, 270)
-    max_radius = 200
+    max_radius = 400
     radius = int((amplitude + 60) * 3)  # Adjust scaling for visible changes
-    pygame.draw.circle(screen, color, center, min(radius, max_radius), 2)
-    print("visual 1")
+    radius = min(radius, max_radius)
+    thickness = max(int(base_thickness - radius * fade_factor), 1)
+    pygame.draw.circle(screen, color, center, radius, thickness)
+    
 
 def midrange_visual(screen, amplitude):
     # Use pygame to create a visual of blue bars that sit vertically at the center bottom of the screen. With parameters of how thick the bars are how far apart they are and how high up they go when activated.
@@ -93,7 +95,7 @@ def main():
     play_song()
 
     song = song_file()
-    segment_lenght= 50 # miliseconds
+    segment_lenght= 25 # miliseconds
     segments = [song[i:i + segment_lenght] for i in range(0, len(song), segment_lenght)]
 
     # set up the screen
