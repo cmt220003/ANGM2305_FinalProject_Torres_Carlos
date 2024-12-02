@@ -40,12 +40,12 @@ def screen_window():
     pygame.display.set_caption("Audio Visualizer - Dullscythe by Porter Robinson")
     return screen
 
-def bass_visual(screen, amplitude, base_thickness=5, thickness_factor=0.5, fade_opacity=128):
+def bass_visual(screen, amplitude, base_thickness=2, thickness_factor=0.5, fade_opacity=128):
     # Use pygame to create a red circle pulse with parameters of size, thickness, and decay.
     amplitude = adjust_amplitude(amplitude)
     color = (255, 0, 0)
     center = (480, 270)
-    max_radius = 400
+    max_radius = 600
     # Radius increases with amplitude.
     radius = int((amplitude + 60) * 3)  # Adjust scaling for visible changes
     radius = min(radius, max_radius)
@@ -53,12 +53,12 @@ def bass_visual(screen, amplitude, base_thickness=5, thickness_factor=0.5, fade_
     thickness = int(base_thickness + radius * thickness_factor)
     # Calculate alpha based on radius.
     max_alpha = 255
-    alpha = max(int(max_alpha - (radius / max_radius) * (max_alpha - fade_opacity)), fade_opacity)    pygame.draw.circle(screen, color, center, radius, thickness)
+    alpha = max(int(max_alpha - (radius / max_radius) * (max_alpha - fade_opacity)), fade_opacity)
     # Create a transparent surface to draw cricle on.
     overlay = pygame.Surface((960, 540), pygame.SRCALPHA)
     pygame.draw.circle(overlay, (*color, alpha), center, radius, thickness)
     # Blit the overlay onto screen
-    screen.blit(overlay, (o, 0))
+    screen.blit(overlay, (0, 0))
 
 def midrange_visual(screen, amplitude):
     # Use pygame to create a visual of blue bars that sit vertically at the center bottom of the screen. With parameters of how thick the bars are how far apart they are and how high up they go when activated.
@@ -121,7 +121,13 @@ def main():
             treble_amp = treble_analysis(segment)
 
             #run visuals
-            bass_visual(screen, bass_amp, base_thickness=8, fade_factor=0.1, fade_opacity=128)
+            bass_visual(
+                screen,
+                amplitude=bass_amp, 
+                base_thickness=2, 
+                thickness_factor=0.05,
+                fade_opacity=128
+            )
             midrange_visual(screen, mid_amp)
             treble_visual(screen, treble_amp)
         else:
